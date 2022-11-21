@@ -7,7 +7,7 @@ import logo from "../logo.svg";
 
 const Component = () => {
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" className="mb-3">
       <Container>
         <Navbar.Brand as={Link} to="/" className="d-flex flex-row align-items-center">
           <img src={logo} style={{ height: `44px` }} className="me-3" alt="logo" />
