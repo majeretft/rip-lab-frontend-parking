@@ -5,6 +5,8 @@ const slice = createSlice({
   initialState: {
     movies: [],
     seats: [],
+    orders: [],
+    orderStatuses: [],
     apiBase: "http://127.0.0.1:8080/api",
   },
   reducers: {
@@ -20,9 +22,26 @@ const slice = createSlice({
     addSeat: (state, action) => {
       state.seats.push(action.payload);
     },
+    setOrders: (state, action) => {
+      state.orders = action.payload;
+    },
+    addOrder: (state, action) => {
+      state.orders.push(action.payload);
+    },
+    setOrderStatuses: (state, action) => {
+      state.orderStatuses = action.payload;
+    },
   },
 });
 
 export default slice.reducer;
 
-export const { setMovies, addMovie, setSeats, addSeat } = slice.actions;
+export const {
+  setMovies,
+  addMovie,
+  setSeats,
+  addSeat,
+  setOrders,
+  addOrder,
+  setOrderStatuses,
+} = slice.actions;

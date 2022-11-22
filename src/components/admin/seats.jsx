@@ -24,7 +24,7 @@ const Component = () => {
 
   useEffect(() => {
     axios.get(`${apiBase}/seats`).then((resp) => {
-      setSeats(resp.data);
+      dispatch(setSeats(resp.data));
     });
   }, [apiBase, dispatch]);
 
