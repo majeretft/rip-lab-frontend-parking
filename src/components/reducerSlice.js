@@ -28,6 +28,21 @@ const slice = createSlice({
     addOrder: (state, action) => {
       state.orders.push(action.payload);
     },
+    updateOrder: (state, action) => {
+      const tmp = state.orders
+        .slice(0, state.orders.length)
+        .filter((x) => +x.id !== action.payload.id);
+      tmp.push(action.payload);
+
+      state.orders = tmp;
+    },
+    deleteOrder: (state, action) => {
+      const tmp = state.orders
+        .slice(0, state.orders.length)
+        .filter((x) => +x.id !== +action.payload);
+      
+        state.orders = tmp;
+    },
     setOrderStatuses: (state, action) => {
       state.orderStatuses = action.payload;
     },
@@ -44,4 +59,6 @@ export const {
   setOrders,
   addOrder,
   setOrderStatuses,
+  updateOrder,
+  deleteOrder,
 } = slice.actions;

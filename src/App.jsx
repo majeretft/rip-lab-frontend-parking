@@ -8,6 +8,8 @@ import Home from "./components/home";
 import About from "./components/about";
 import Cart from "./components/cart";
 import Admin from "./components/admin";
+import Info from "./components/info";
+import Order from "./components/order";
 import Page404 from "./components/page404";
 
 import { store } from "./components/store";
@@ -22,6 +24,8 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="cart" element={<Cart />} />
             <Route path="admin" element={<Admin />} />
+            <Route path="info/:id" element={<Info />} />
+            <Route path="order/:id" element={<Order />} />
             <Route path="*" element={<Page404 />} />
           </Route>
         </Routes>

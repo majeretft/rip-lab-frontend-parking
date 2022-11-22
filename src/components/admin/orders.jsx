@@ -113,7 +113,7 @@ const Component = () => {
                 onChange={(e) => setStatus(e.target.value)}
                 onBlur={(e) => setStatus(e.target.value)}
               >
-                <option disabled selected="selected" value="">Выберите статус</option>
+                <option disabled value="">Выберите статус</option>
                 {orderStatuses &&
                   orderStatuses.map((x) => (
                     <option key={x.val} value={x.val}>
@@ -133,7 +133,7 @@ const Component = () => {
                 onChange={(e) => setMovieId(e.target.value)}
                 onBlur={(e) => setMovieId(e.target.value)}
               >
-                <option disabled selected="selected" value="">Выберите Фильм (ID)</option>
+                <option disabled value="">Выберите Фильм (ID)</option>
                 {movies &&
                   movies.map((x) => (
                     <option key={x.id} value={x.id}>
@@ -153,16 +153,13 @@ const Component = () => {
                 onChange={(e) => setSeatId(e.target.value)}
                 onBlur={(e) => setSeatId(e.target.value)}
               >
-                <option disabled selected="selected" value="">Выберите Место (ID)</option>
+                <option disabled value="">Выберите Место (ID)</option>
                 {seats &&
                   seats.map((x) => (
                     <option key={x.id} value={x.id}>
                       {`Зал ${x.hall} ряд ${x.row} место ${x.number}`}
                     </option>
                   ))}
-                {seats.length < 1 && (
-                  <option value="-1">Список загружается</option>
-                )}
               </Form.Select>
               <Form.Text className="text-muted">Статус нового заказа</Form.Text>
             </Form.Group>

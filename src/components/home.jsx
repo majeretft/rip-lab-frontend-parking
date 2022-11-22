@@ -1,7 +1,13 @@
+import MovieList from "./movieList";
+import FindMovie from "./findMovie";
+
 const Component = () => {
   return (
-    <h1>HOME</h1>
-  )
-}
+    <>
+      <FindMovie />
+      <MovieList />
+    </>
+  );
+};
 
 export default Component;
