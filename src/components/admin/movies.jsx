@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+
+import { addMovie, setMovies } from "../reducerSlice";
 
 const Component = () => {
   const defNewMovie = {
@@ -17,34 +19,33 @@ const Component = () => {
     image: "",
   };
 
-  const [movies, setMovies] = useState([]);
   const [newMovie, setNewMovie] = useState(defNewMovie);
   const apiBase = useSelector((state) => state.toolkit.apiBase);
+  const movies = useSelector((state) => state.toolkit.movies);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios.get(`${apiBase}/movies`).then((resp) => {
-      setMovies(resp.data);
+      dispatch(setMovies(resp.data));
     });
-  }, []);
+  }, [apiBase, dispatch]);
 
-  const addMovie = (e) => {
+  const addNew = (e) => {
     e.preventDefault();
 
     axios.post(`${apiBase}/movies`, newMovie).then((resp) => {
-      const tmp = movies.slice(0, movies.length);
-      tmp.push(resp.data);
-      setMovies(tmp);
+      dispatch(addMovie(resp.data));
       setNewMovie(defNewMovie);
     });
   };
 
   const handleChange = (e) => {
-    const newMovieTmp = { ... newMovie};
+    const newMovieTmp = { ...newMovie };
 
     newMovieTmp[e.target.name] = e.target.value;
 
     setNewMovie(newMovieTmp);
-  }
+  };
 
   return (
     <div className="mb-5 p-2 border border-top-0 rounded-bottom">
@@ -95,7 +96,7 @@ const Component = () => {
 
       <h3>Добавить новый фильм</h3>
 
-      <Form onSubmit={addMovie}>
+      <Form onSubmit={addNew}>
         <Row>
           <Col>
             <Form.Group className="mb-3">
@@ -172,7 +173,7 @@ const Component = () => {
                 type="text"
                 name="image"
                 placeholder="Постер (ссылка)"
-                value={newMovie.poster}
+                value={newMovie.image}
                 onChange={handleChange}
               />
               <Form.Text className="text-muted">

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+
+import { addSeat, setSeats } from "../reducerSlice";
 
 const Component = () => {
   const defNewObj = {
@@ -15,23 +17,22 @@ const Component = () => {
     price: "",
   };
 
-  const [seats, setSeats] = useState([]);
   const [newSeat, setNewSeat] = useState(defNewObj);
   const apiBase = useSelector((state) => state.toolkit.apiBase);
+  const seats = useSelector((state) => state.toolkit.seats);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios.get(`${apiBase}/seats`).then((resp) => {
       setSeats(resp.data);
     });
-  }, []);
+  }, [apiBase, dispatch]);
 
-  const addSeat = (e) => {
+  const addNew = (e) => {
     e.preventDefault();
 
     axios.post(`${apiBase}/seats`, newSeat).then((resp) => {
-      const tmp = seats.slice(0, seats.length);
-      tmp.push(resp.data);
-      setSeats(tmp);
+      dispatch(addSeat(resp.data));
       setNewSeat(defNewObj);
     });
   };
@@ -87,11 +88,11 @@ const Component = () => {
 
       <h3>Добавить новое место в зал</h3>
 
-      <Form onSubmit={addSeat}>
+      <Form onSubmit={addNew}>
         <Row>
           <Col>
             <Form.Group className="mb-3">
-              <Form.Label>Название</Form.Label>
+              <Form.Label>Номер зала</Form.Label>
               <Form.Control
                 type="number"
                 name="hall"
