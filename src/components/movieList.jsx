@@ -24,7 +24,6 @@ const Component = () => {
   return (
     <>
       <h1>Сегодня в кино</h1>
-      <hr />
       <Row>
         {movies &&
           movies.map((x) => (

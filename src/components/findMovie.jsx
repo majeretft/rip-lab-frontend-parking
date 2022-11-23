@@ -22,7 +22,6 @@ const Component = () => {
   return (
     <>
       <h1>Поиск фильма</h1>
-      <hr />
       <Form.Group className="mb-3">
         <Form.Label>Название для поиска</Form.Label>
         <Form.Control
@@ -95,8 +94,6 @@ const Component = () => {
           )}
         </tbody>
       </Table>
-
-      <hr />
     </>
   );
 };
