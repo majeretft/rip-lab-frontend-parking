@@ -5,10 +5,9 @@ import axios from "axios";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Image from "react-bootstrap/Image";
 
 import { setSeats, setOrderStatuses, addOrder } from "./reducerSlice";
+import authHeader from "../services/auth-header";
 
 const Component = () => {
   let { id } = useParams();
@@ -20,13 +19,15 @@ const Component = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/seats`).then((resp) => {
+    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
       dispatch(setSeats(resp.data));
     });
 
-    axios.get(`${apiBase}/orders/info/statuses`).then((resp) => {
-      dispatch(setOrderStatuses(resp.data));
-    });
+    axios
+      .get(`${apiBase}/orders/info/statuses`, { headers: authHeader() })
+      .then((resp) => {
+        dispatch(setOrderStatuses(resp.data));
+      });
   }, [apiBase, dispatch]);
 
   const selectSeats = (id) => {
@@ -47,11 +48,15 @@ const Component = () => {
 
     for (const s of selected) {
       axios
-        .post(`${apiBase}/orders`, {
-          status: +status,
-          movie_id: +id,
-          seat_id: +s,
-        })
+        .post(
+          `${apiBase}/orders`,
+          {
+            status: +status,
+            movie_id: +id,
+            seat_id: +s,
+          },
+          { headers: authHeader() }
+        )
         .then((resp) => {
           dispatch(addOrder(resp.data));
         });

@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { addMovie, setMovies } from "../reducerSlice";
+import authHeader from "../../services/auth-header";
 
 const Component = () => {
   const defNewMovie = {
@@ -25,7 +26,7 @@ const Component = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/movies`).then((resp) => {
+    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
       dispatch(setMovies(resp.data));
     });
   }, [apiBase, dispatch]);
@@ -33,7 +34,7 @@ const Component = () => {
   const addNew = (e) => {
     e.preventDefault();
 
-    axios.post(`${apiBase}/movies`, newMovie).then((resp) => {
+    axios.post(`${apiBase}/movies`, newMovie, { headers: authHeader() }).then((resp) => {
       dispatch(addMovie(resp.data));
       setNewMovie(defNewMovie);
     });

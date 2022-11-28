@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -7,6 +7,8 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
+import authHeader from "../services/auth-header";
+
 const Component = () => {
   const apiBase = useSelector((state) => state.toolkit.apiBase);
 
@@ -14,7 +16,7 @@ const Component = () => {
   const [movies, setMovies] = useState([]);
 
   const find = () => {
-    axios.get(`${apiBase}/movies/?name=${encodeURIComponent(name)}`).then((resp) => {
+    axios.get(`${apiBase}/movies/?name=${encodeURIComponent(name)}`, { headers: authHeader() }).then((resp) => {
       setMovies(resp.data);
     });
   };

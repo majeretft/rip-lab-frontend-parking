@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 
 import { setMovies } from "./reducerSlice";
+import authHeader from "../services/auth-header";
 
 const Component = () => {
   let { id } = useParams();
@@ -17,7 +18,7 @@ const Component = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/movies`).then((resp) => {
+    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
       dispatch(setMovies(resp.data));
     });
   }, [apiBase, dispatch]);

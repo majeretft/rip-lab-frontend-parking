@@ -10,6 +10,9 @@ import Cart from "./components/cart";
 import Admin from "./components/admin";
 import Info from "./components/info";
 import Order from "./components/order";
+import Login from "./components/login";
+import Profile from "./components/profile";
+import Register from "./components/register";
 import Page404 from "./components/page404";
 
 import { store } from "./components/store";
@@ -24,6 +27,9 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="cart" element={<Cart />} />
             <Route path="admin" element={<Admin />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="profile" element={<Profile />} />
             <Route path="info/:id" element={<Info />} />
             <Route path="order/:id" element={<Order />} />
             <Route path="*" element={<Page404 />} />

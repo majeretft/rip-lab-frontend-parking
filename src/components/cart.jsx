@@ -5,6 +5,8 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
+import authHeader from "../services/auth-header";
+
 import {
   setOrders,
   setOrderStatuses,
@@ -23,27 +25,31 @@ const Component = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/orders`).then((resp) => {
+    axios.get(`${apiBase}/orders`, { headers: authHeader() }).then((resp) => {
       dispatch(setOrders(resp.data));
     });
 
-    axios.get(`${apiBase}/orders/info/statuses`).then((resp) => {
-      dispatch(setOrderStatuses(resp.data));
-    });
+    axios
+      .get(`${apiBase}/orders/info/statuses`, { headers: authHeader() })
+      .then((resp) => {
+        dispatch(setOrderStatuses(resp.data));
+      });
 
-    axios.get(`${apiBase}/movies`).then((resp) => {
+    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
       dispatch(setMovies(resp.data));
     });
 
-    axios.get(`${apiBase}/seats`).then((resp) => {
+    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
       dispatch(setSeats(resp.data));
     });
   }, [apiBase, dispatch]);
 
   const deleteCart = (id) => {
-    axios.delete(`${apiBase}/orders/${id}`).then((resp) => {
-      dispatch(deleteOrder(id));
-    });
+    axios
+      .delete(`${apiBase}/orders/${id}`, { headers: authHeader() })
+      .then((resp) => {
+        dispatch(deleteOrder(id));
+      });
   };
   const payCart = () => {
     const ordersInCart = orders.filter((x) => x.status === 1);
@@ -53,7 +59,7 @@ const Component = () => {
       const tmp = { ...oic };
       tmp.status = 2;
       axios
-        .put(`${apiBase}/orders/${id}`, tmp)
+        .put(`${apiBase}/orders/${id}`, tmp, { headers: authHeader() })
         .then((resp) => {
           dispatch(updateOrder(tmp));
         });

@@ -14,6 +14,7 @@ import {
   setMovies,
   setSeats,
 } from "../reducerSlice";
+import authHeader from "../../services/auth-header";
 
 const Component = () => {
   const [status, setStatus] = useState("");
@@ -28,34 +29,38 @@ const Component = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/orders`).then((resp) => {
+    axios.get(`${apiBase}/orders?all=1`, { headers: authHeader() }).then((resp) => {
       dispatch(setOrders(resp.data));
     });
 
-    axios.get(`${apiBase}/orders/info/statuses`).then((resp) => {
-      dispatch(setOrderStatuses(resp.data));
+    axios
+      .get(`${apiBase}/orders/info/statuses`, { headers: authHeader() })
+      .then((resp) => {
+        dispatch(setOrderStatuses(resp.data));
+      });
+
+    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
+      dispatch(setMovies(resp.data));
     });
 
-    if (!movies.length)
-      axios.get(`${apiBase}/movies`).then((resp) => {
-        dispatch(setMovies(resp.data));
-      });
-
-    if (!seats.length)
-      axios.get(`${apiBase}/seats`).then((resp) => {
-        dispatch(setSeats(resp.data));
-      });
+    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
+      dispatch(setSeats(resp.data));
+    });
   }, [apiBase, dispatch]);
 
   const addNew = (e) => {
     e.preventDefault();
 
     axios
-      .post(`${apiBase}/orders`, {
-        status: +status,
-        movie_id: +movieId,
-        seat_id: +seatId,
-      })
+      .post(
+        `${apiBase}/orders`,
+        {
+          status: +status,
+          movie_id: +movieId,
+          seat_id: +seatId,
+        },
+        { headers: authHeader() }
+      )
       .then((resp) => {
         dispatch(addOrder(resp.data));
       });
@@ -73,6 +78,7 @@ const Component = () => {
               <th>Статус</th>
               <th>ID Фильма</th>
               <th>ID Места</th>
+              <th>ID Пользователя</th>
             </tr>
           </thead>
           <tbody>
@@ -81,14 +87,19 @@ const Component = () => {
                 return (
                   <tr key={x.id}>
                     <td>{x.id}</td>
-                    <td>{orderStatuses && orderStatuses.find(e => +e.val === +x.status)?.name}</td>
+                    <td>
+                      {orderStatuses &&
+                        orderStatuses.find((e) => +e.val === +x.status)?.name}
+                    </td>
                     <td>{x.movie_id}</td>
                     <td>{x.seat_id}</td>
+                    <td>{x.user_id}</td>
                   </tr>
                 );
               })}
             {!orders.length && (
               <tr>
+                <td>-</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -113,7 +124,9 @@ const Component = () => {
                 onChange={(e) => setStatus(e.target.value)}
                 onBlur={(e) => setStatus(e.target.value)}
               >
-                <option disabled value="">Выберите статус</option>
+                <option disabled value="">
+                  Выберите статус
+                </option>
                 {orderStatuses &&
                   orderStatuses.map((x) => (
                     <option key={x.val} value={x.val}>
@@ -133,7 +146,9 @@ const Component = () => {
                 onChange={(e) => setMovieId(e.target.value)}
                 onBlur={(e) => setMovieId(e.target.value)}
               >
-                <option disabled value="">Выберите Фильм (ID)</option>
+                <option disabled value="">
+                  Выберите Фильм (ID)
+                </option>
                 {movies &&
                   movies.map((x) => (
                     <option key={x.id} value={x.id}>
@@ -153,7 +168,9 @@ const Component = () => {
                 onChange={(e) => setSeatId(e.target.value)}
                 onBlur={(e) => setSeatId(e.target.value)}
               >
-                <option disabled value="">Выберите Место (ID)</option>
+                <option disabled value="">
+                  Выберите Место (ID)
+                </option>
                 {seats &&
                   seats.map((x) => (
                     <option key={x.id} value={x.id}>

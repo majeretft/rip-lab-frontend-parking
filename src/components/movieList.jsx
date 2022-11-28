@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 import { setMovies } from "./reducerSlice";
+import authHeader from "../services/auth-header";
 
 const Component = () => {
   const apiBase = useSelector((state) => state.toolkit.apiBase);
@@ -16,7 +17,7 @@ const Component = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/movies`).then((resp) => {
+    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
       dispatch(setMovies(resp.data));
     });
   }, [apiBase, dispatch]);

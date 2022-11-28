@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import { addSeat, setSeats } from "../reducerSlice";
+import authHeader from "../../services/auth-header";
 
 const Component = () => {
   const defNewObj = {
@@ -23,7 +24,7 @@ const Component = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/seats`).then((resp) => {
+    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
       dispatch(setSeats(resp.data));
     });
   }, [apiBase, dispatch]);
@@ -31,7 +32,7 @@ const Component = () => {
   const addNew = (e) => {
     e.preventDefault();
 
-    axios.post(`${apiBase}/seats`, newSeat).then((resp) => {
+    axios.post(`${apiBase}/seats`, newSeat, { headers: authHeader() }).then((resp) => {
       dispatch(addSeat(resp.data));
       setNewSeat(defNewObj);
     });
