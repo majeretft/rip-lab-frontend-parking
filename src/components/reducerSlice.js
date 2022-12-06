@@ -52,6 +52,7 @@ const initialState = {
   seats: [],
   orders: [],
   orderStatuses: [],
+  users: [],
   apiBase: "http://127.0.0.1:8080/api",
   isLoggedIn: false,
   user: null,
@@ -66,11 +67,22 @@ const slice = createSlice({
   name: "toolkit",
   initialState: initialState,
   reducers: {
+    setUsers: (state, action) => {
+      state.users = action.payload;
+    },
     setMovies: (state, action) => {
       state.movies = action.payload;
     },
     addMovie: (state, action) => {
       state.movies.push(action.payload);
+    },
+    updateMovie: (state, action) => {
+      const tmp = state.movies
+        .slice(0, state.movies.length)
+        .filter((x) => +x.id !== action.payload.id);
+      tmp.push(action.payload);
+
+      state.movies = tmp;
     },
     setSeats: (state, action) => {
       state.seats = action.payload;
@@ -145,4 +157,6 @@ export const {
   deleteOrder,
   setMessage,
   clearMessage,
+  setUsers,
+  updateMovie,
 } = slice.actions;
