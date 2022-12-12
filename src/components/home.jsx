@@ -1,12 +1,12 @@
-import MovieList from "./movieList";
-import FindMovie from "./findMovie";
+import ParkingList from "./parkingList";
+import FindParking from "./findParking";
 
 const Component = () => {
   return (
     <div className="mb-5">
-      <FindMovie />
+      <FindParking />
       <hr className="my-5" />
-      <MovieList />
+      <ParkingList />
     </div>
   );
 };

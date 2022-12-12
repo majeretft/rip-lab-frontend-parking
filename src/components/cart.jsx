@@ -10,16 +10,16 @@ import authHeader from "../services/auth-header";
 import {
   setOrders,
   setOrderStatuses,
-  setMovies,
-  setSeats,
+  setUsers,
+  setParkings,
   deleteOrder,
   updateOrder,
 } from "./reducerSlice";
 
 const Component = () => {
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const movies = useSelector((state) => state.toolkit.movies);
-  const seats = useSelector((state) => state.toolkit.seats);
+  const users = useSelector((state) => state.toolkit.users);
+  const parkings = useSelector((state) => state.toolkit.parkings);
   const orders = useSelector((state) => state.toolkit.orders);
   const orderStatuses = useSelector((state) => state.toolkit.orderStatuses);
   const dispatch = useDispatch();
@@ -35,12 +35,12 @@ const Component = () => {
         dispatch(setOrderStatuses(resp.data));
       });
 
-    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
-      dispatch(setMovies(resp.data));
+    axios.get(`${apiBase}/users`, { headers: authHeader() }).then((resp) => {
+      dispatch(setUsers(resp.data));
     });
 
-    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
-      dispatch(setSeats(resp.data));
+    axios.get(`${apiBase}/parkings`, { headers: authHeader() }).then((resp) => {
+      dispatch(setParkings(resp.data));
     });
   }, [apiBase, dispatch]);
 
@@ -77,16 +77,15 @@ const Component = () => {
       </Form.Group>
 
       {orders.length > 0 &&
-        movies.length > 0 &&
+        users.length > 0 &&
         orderStatuses.length > 0 &&
-        seats.length > 0 && (
+        parkings.length > 0 && (
           <Table striped bordered hover>
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Статус</th>
-                <th>Фильм</th>
-                <th>Место</th>
+                <th>Паркинг</th>
                 <th>Удалить</th>
               </tr>
             </thead>
@@ -95,7 +94,7 @@ const Component = () => {
                 orders
                   .filter((x) => x.status === 1)
                   .map((x) => {
-                    const s = seats.find((el) => +el.id === x.seat_id);
+                    const s = parkings.find((el) => +el.id === x.parking_id);
 
                     return (
                       <tr key={x.id}>
@@ -106,9 +105,9 @@ const Component = () => {
                               ?.name}
                         </td>
                         <td>
-                          {movies.find((el) => +el.id === x.movie_id).name}
+                          {users.find((el) => +el.id === x.user_id).name}
                         </td>
-                        <td>{`Зал ${s.hall} ряд ${s.row} место ${s.number}`}</td>
+                        <td>{s.address}</td>
                         <td>
                           <Button
                             variant="danger"
@@ -126,7 +125,6 @@ const Component = () => {
                   })}
               {!orders.length && (
                 <tr>
-                  <td>-</td>
                   <td>-</td>
                   <td>-</td>
                   <td>-</td>
