@@ -20,10 +20,28 @@ const Register = () => {
     username: "",
     email: "",
     password: "",
+    name: "",
+    car: "",
   };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
+      .test(
+        "len",
+        "Имя должно быть от 3 до 20 символов",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
+      .required("Это поле обязательное"),
+    name: Yup.string()
+      .test(
+        "len",
+        "Имя должно быть от 3 до 20 символов",
+        (val) =>
+          val && val.toString().length >= 3 && val.toString().length <= 20
+      )
+      .required("Это поле обязательное"),
+    car: Yup.string()
       .test(
         "len",
         "Имя должно быть от 3 до 20 символов",
@@ -45,11 +63,11 @@ const Register = () => {
   });
 
   const handleRegister = (formValue) => {
-    const { username, email, password } = formValue;
+    const { username, email, password, name, car } = formValue;
 
     setSuccessful(false);
 
-    dispatch(register({ username, email, password }))
+    dispatch(register({ username, email, password, name, car }))
       .unwrap()
       .then(() => {
         setSuccessful(true);
@@ -85,6 +103,27 @@ const Register = () => {
                       className="alert alert-danger"
                     />
                   </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="name">Имя</label>
+                    <Field name="name" type="text" className="form-control" />
+                    <ErrorMessage
+                      name="name"
+                      component="div"
+                      className="alert alert-danger"
+                    />
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label htmlFor="car">Автомобиль</label>
+                    <Field name="car" type="text" className="form-control" />
+                    <ErrorMessage
+                      name="car"
+                      component="div"
+                      className="alert alert-danger"
+                    />
+                  </div>
+
                   <div className="mb-3">
                     <label htmlFor="email">Электронная почта</label>
                     <Field name="email" type="email" className="form-control" />
@@ -94,6 +133,7 @@ const Register = () => {
                       className="alert alert-danger"
                     />
                   </div>
+
                   <div className="mb-3">
                     <label htmlFor="password">Пароль</label>
                     <Field
@@ -107,6 +147,7 @@ const Register = () => {
                       className="alert alert-danger"
                     />
                   </div>
+
                   <div className="mb-3">
                     <button type="submit" className="btn btn-primary btn-block">
                       Зарегистрироваться

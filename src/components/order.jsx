@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
-import { setParkings, setOrderStatuses, addOrder, setUsers } from "./reducerSlice";
+import { setParkings, setOrderStatuses, addOrder } from "./reducerSlice";
 import authHeader from "../services/auth-header";
 
 const Component = () => {
@@ -14,7 +14,6 @@ const Component = () => {
 
   const apiBase = useSelector((state) => state.toolkit.apiBase);
   const parkings = useSelector((state) => state.toolkit.parkings);
-  const users = useSelector((state) => state.toolkit.users);
   const orderStatuses = useSelector((state) => state.toolkit.orderStatuses);
   const [selected, setSelected] = useState([]);
   const dispatch = useDispatch();
@@ -22,10 +21,6 @@ const Component = () => {
   useEffect(() => {
     axios.get(`${apiBase}/parkings`, { headers: authHeader() }).then((resp) => {
       dispatch(setParkings(resp.data));
-    });
-
-    axios.get(`${apiBase}/users`, { headers: authHeader() }).then((resp) => {
-      dispatch(setUsers(resp.data));
     });
 
     axios
@@ -51,13 +46,15 @@ const Component = () => {
   const addCart = () => {
     const status = orderStatuses.find((x) => x.name === "В корзине").val;
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     for (const s of selected) {
       axios
         .post(
           `${apiBase}/orders`, 
           {
             status: +status,
-            user_id: users[0].id, // TODO
+            user_id: user.id,
             parking_id: +s,
           },
           { headers: authHeader() },

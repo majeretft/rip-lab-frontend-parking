@@ -9,16 +9,16 @@ import authHeader from "../services/auth-header";
 import {
   setOrders,
   setOrderStatuses,
-  setMovies,
-  setSeats,
+  setUsers,
+  setParkings,
 } from "./reducerSlice";
 
 const Profile = () => {
   const user = useSelector((state) => state.toolkit.user);
 
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const movies = useSelector((state) => state.toolkit.movies);
-  const seats = useSelector((state) => state.toolkit.seats);
+  const users = useSelector((state) => state.toolkit.users);
+  const parkings = useSelector((state) => state.toolkit.parkings);
   const orders = useSelector((state) => state.toolkit.orders);
   const orderStatuses = useSelector((state) => state.toolkit.orderStatuses);
   const dispatch = useDispatch();
@@ -34,12 +34,12 @@ const Profile = () => {
         dispatch(setOrderStatuses(resp.data));
       });
 
-    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
-      dispatch(setMovies(resp.data));
+    axios.get(`${apiBase}/users`, { headers: authHeader() }).then((resp) => {
+      dispatch(setUsers(resp.data));
     });
 
-    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
-      dispatch(setSeats(resp.data));
+    axios.get(`${apiBase}/parkings`, { headers: authHeader() }).then((resp) => {
+      dispatch(setParkings(resp.data));
     });
   }, [apiBase, dispatch]);
 
@@ -64,50 +64,48 @@ const Profile = () => {
       <p>
         <strong>Электронная почта:</strong> {user.email}
       </p>
+      <p>
+        <strong>Имя:</strong> {user.name}
+      </p>
+      <p>
+        <strong>Автомобиль:</strong> {user.car}
+      </p>
       <strong>Права доступа:</strong>
       <ul>
         {user.roles &&
           user.roles.map((role, index) => <li key={index}>{role}</li>)}
       </ul>
 
-      {orders.length > 0 &&
-        movies.length > 0 &&
-        orderStatuses.length > 0 &&
-        seats.length > 0 && (
+      {orders && orders.length > 0 &&
+        users && users.length > 0 &&
+        orderStatuses && orderStatuses.length > 0 &&
+        parkings && parkings.length > 0 && (
           <Table striped bordered hover>
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Статус</th>
-                <th>Фильм</th>
-                <th>Место</th>
+                <th>Паркинг</th>
               </tr>
             </thead>
             <tbody>
               {orders.length > 0 &&
                 orders
                   .map((x) => {
-                    const s = seats.find((el) => +el.id === x.seat_id);
+                    const s = parkings.find((el) => +el.id === x.parking_id);
 
                     return (
                       <tr key={x.id}>
                         <td>{x.id}</td>
                         <td>
-                          {orderStatuses &&
-                            orderStatuses.find((e) => +e.val === +x.status)
-                              ?.name}
+                          {orderStatuses && orderStatuses.find((e) => +e.val === +x.status)?.name}
                         </td>
-                        <td>
-                          {movies.find((el) => +el.id === x.movie_id).name}
-                        </td>
-                        <td>{`Зал ${s.hall} ряд ${s.row} место ${s.number}`}</td>
+                        <td>{s.address}</td>
                       </tr>
                     );
                   })}
               {!orders.length && (
                 <tr>
-                  <td>-</td>
-                  <td>-</td>
                   <td>-</td>
                   <td>-</td>
                   <td>-</td>

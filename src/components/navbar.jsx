@@ -57,17 +57,17 @@ const Component = () => {
             </Nav.Link>
             {isLoggedIn ? (
               <>
-                <Nav.Link as={Link} to="/profile">
+                <Nav.Link as={Link} to="/profile" className="text-white">
                   {user.email}
                 </Nav.Link>
-                <Nav.Link onClick={exit}>Выйти</Nav.Link>
+                <Nav.Link onClick={exit} className="text-white">Выйти</Nav.Link>
               </>
             ) : (
               <>
-                <Nav.Link as={Link} to="/login">
+                <Nav.Link as={Link} to="/login" className="text-white">
                   Войти
                 </Nav.Link>
-                <Nav.Link as={Link} to="/register">
+                <Nav.Link as={Link} to="/register" className="text-white">
                   Зерегистрироваться
                 </Nav.Link>
               </>
