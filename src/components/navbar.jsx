@@ -21,12 +21,12 @@ const Component = () => {
   };
 
   return (
-    <Navbar bg="light" expand="lg" className="mb-3">
+    <Navbar bg="primary" expand="lg" className="mb-3">
       <Container>
         <Navbar.Brand
           as={Link}
           to="/"
-          className="d-flex flex-row align-items-center"
+          className="d-flex flex-row align-items-center text-white"
         >
           <img
             src={logo}
@@ -34,20 +34,20 @@ const Component = () => {
             className="me-3"
             alt="logo"
           />
-          Кинотеатр Бауманец
+          Парковки университета
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse>
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">
+            <Nav.Link as={Link} to="/" className="text-white">
               Домашняя страница
             </Nav.Link>
-            <Nav.Link as={Link} to="/about">
-              О Кинотеатре
+            <Nav.Link as={Link} to="/about" className="text-white">
+              О Паркинге
             </Nav.Link>
           </Nav>
           <Nav className="ms-auto">
-            <Nav.Link as={Link} to="/cart">
+            <Nav.Link as={Link} to="/cart" className="text-white">
               {orders && orders.length > 0 && (
                 <Badge bg="secondary" className="me-1">
                   {orders.filter((x) => x.status === 1).length}
@@ -57,17 +57,17 @@ const Component = () => {
             </Nav.Link>
             {isLoggedIn ? (
               <>
-                <Nav.Link as={Link} to="/profile">
+                <Nav.Link as={Link} to="/profile" className="text-white">
                   {user.email}
                 </Nav.Link>
-                <Nav.Link onClick={exit}>Выйти</Nav.Link>
+                <Nav.Link onClick={exit} className="text-white">Выйти</Nav.Link>
               </>
             ) : (
               <>
-                <Nav.Link as={Link} to="/login">
+                <Nav.Link as={Link} to="/login" className="text-white">
                   Войти
                 </Nav.Link>
-                <Nav.Link as={Link} to="/register">
+                <Nav.Link as={Link} to="/register" className="text-white">
                   Зерегистрироваться
                 </Nav.Link>
               </>

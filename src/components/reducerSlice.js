@@ -6,9 +6,9 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ username, email, password }, thunkAPI) => {
+  async ({ username, email, password, name, car }, thunkAPI) => {
     try {
-      const response = await AuthService.register(username, email, password);
+      const response = await AuthService.register(username, email, password, name, car);
       thunkAPI.dispatch(setMessage(response.data.message));
       return response.data;
     } catch (error) {
@@ -48,8 +48,8 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 });
 
 const initialState = {
-  movies: [],
-  seats: [],
+  users: [],
+  parkings: [],
   orders: [],
   orderStatuses: [],
   users: [],
@@ -70,13 +70,10 @@ const slice = createSlice({
     setUsers: (state, action) => {
       state.users = action.payload;
     },
-    setMovies: (state, action) => {
-      state.movies = action.payload;
+    addUser: (state, action) => {
+      state.users.push(action.payload);
     },
-    addMovie: (state, action) => {
-      state.movies.push(action.payload);
-    },
-    updateMovie: (state, action) => {
+    updateParkings: (state, action) => {
       const tmp = state.movies
         .slice(0, state.movies.length)
         .filter((x) => +x.id !== action.payload.id);
@@ -84,11 +81,11 @@ const slice = createSlice({
 
       state.movies = tmp;
     },
-    setSeats: (state, action) => {
-      state.seats = action.payload;
+    setParkings: (state, action) => {
+      state.parkings = action.payload;
     },
-    addSeat: (state, action) => {
-      state.seats.push(action.payload);
+    addParking: (state, action) => {
+      state.parkings.push(action.payload);
     },
     setOrders: (state, action) => {
       state.orders = action.payload;
@@ -146,10 +143,10 @@ const slice = createSlice({
 export default slice.reducer;
 
 export const {
-  setMovies,
-  addMovie,
-  setSeats,
-  addSeat,
+  setUsers,
+  addUser,
+  setParkings,
+  addParking,
   setOrders,
   addOrder,
   setOrderStatuses,
@@ -157,6 +154,5 @@ export const {
   deleteOrder,
   setMessage,
   clearMessage,
-  setUsers,
   updateMovie,
 } = slice.actions;

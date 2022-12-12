@@ -15,8 +15,6 @@ import {
   setOrderStatuses,
   setMovies,
   setSeats,
-  setUsers,
-  updateOrder,
 } from "../reducerSlice";
 import authHeader from "../../services/auth-header";
 
@@ -24,11 +22,10 @@ const Component = () => {
   const [status, setStatus] = useState("");
   const [movieId, setMovieId] = useState("");
   const [seatId, setSeatId] = useState("");
-  const [userId, setUserId] = useState("");
 
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const movies = useSelector((state) => state.toolkit.movies);
-  const seats = useSelector((state) => state.toolkit.seats);
+  const users = useSelector((state) => state.toolkit.users);
+  const parkings = useSelector((state) => state.toolkit.parkings);
   const orders = useSelector((state) => state.toolkit.orders);
   const orderStatuses = useSelector((state) => state.toolkit.orderStatuses);
   const users = useSelector((state) => state.toolkit.users);
@@ -67,18 +64,16 @@ const Component = () => {
         setFilteredOrders(resp.data);
       });
 
-    axios
-      .get(`${apiBase}/orders/info/statuses`, { headers: authHeader() })
-      .then((resp) => {
-        dispatch(setOrderStatuses(resp.data));
-      });
-
-    axios.get(`${apiBase}/movies`, { headers: authHeader() }).then((resp) => {
-      dispatch(setMovies(resp.data));
+    axios.get(`${apiBase}/orders/info/statuses`, { headers: authHeader() }).then((resp) => {
+      dispatch(setOrderStatuses(resp.data));
     });
 
-    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
-      dispatch(setSeats(resp.data));
+    axios.get(`${apiBase}/users`, { headers: authHeader() }).then((resp) => {
+      dispatch(setUsers(resp.data));
+    });
+
+    axios.get(`${apiBase}/parkings`, { headers: authHeader() }).then((resp) => {
+      dispatch(setParkings(resp.data));
     });
 
     axios.get(`${apiBase}/users`, { headers: authHeader() }).then((resp) => {
@@ -90,15 +85,13 @@ const Component = () => {
     e.preventDefault();
 
     axios
-      .post(
-        `${apiBase}/orders`,
+      .post(`${apiBase}/orders`, 
         {
           status: +status,
           movie_id: +movieId,
           seat_id: +seatId,
-          user_id: +userId,
         },
-        { headers: authHeader() }
+        { headers: authHeader() },
       )
       .then((resp) => {
         dispatch(addOrder(resp.data));
@@ -227,7 +220,7 @@ const Component = () => {
               <th>Статус</th>
               <th>ID Фильма</th>
               <th>ID Места</th>
-              <th>Пользоватль</th>
+              <th>ID Пользователя</th>
               <th>Дата</th>
               <th>Изменить</th>
             </tr>
@@ -244,19 +237,7 @@ const Component = () => {
                     </td>
                     <td>{x.movie_id}</td>
                     <td>{x.seat_id}</td>
-                    <td>
-                      {users &&
-                        users.find((y) => +y.id === +x.user_id)?.username}
-                    </td>
-                    <td>{moment(x.updatedAt).format("DD-MM-YYYY hh:ss")}</td>
-                    <td>
-                      <Button
-                        variant="outline-secondary"
-                        onClick={() => handleShow(x.id)}
-                      >
-                        &#9998;
-                      </Button>
-                    </td>
+                    <td>{x.user_id}</td>
                   </tr>
                 );
               })}
@@ -303,47 +284,45 @@ const Component = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Фильм (ID)</Form.Label>
+              <Form.Label>Посетитель (ID)</Form.Label>
               <Form.Select
-                name="movie_id"
-                placeholder="Фильм (ID)"
-                value={movieId}
-                onChange={(e) => setMovieId(e.target.value)}
-                onBlur={(e) => setMovieId(e.target.value)}
+                name="user_id"
+                placeholder="Посетитель (ID)"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                onBlur={(e) => setUserId(e.target.value)}
               >
-                <option disabled value="">
-                  Выберите Фильм (ID)
-                </option>
-                {movies &&
-                  movies.map((x) => (
+                <option disabled value="">Выберите Посетителя (ID)</option>
+                {users &&
+                  users.map((x) => (
                     <option key={x.id} value={x.id}>
                       {x.name}
                     </option>
                   ))}
               </Form.Select>
-              <Form.Text className="text-muted">Статус нового заказа</Form.Text>
+              <Form.Text className="text-muted">Заказчик для нового заказа</Form.Text>
             </Form.Group>
+          </Col>
 
+          <Col>
             <Form.Group className="mb-3">
-              <Form.Label>Место (ID)</Form.Label>
+              <Form.Label>Парковка (ID)</Form.Label>
               <Form.Select
-                name="seat_id"
-                placeholder="Место (ID)"
-                value={seatId}
-                onChange={(e) => setSeatId(e.target.value)}
-                onBlur={(e) => setSeatId(e.target.value)}
+                name="parking_id"
+                placeholder="Парковка (ID)"
+                value={parkingId}
+                onChange={(e) => setParkingId(e.target.value)}
+                onBlur={(e) => setParkingId(e.target.value)}
               >
-                <option disabled value="">
-                  Выберите Место (ID)
-                </option>
-                {seats &&
-                  seats.map((x) => (
+                <option disabled value="">Выберите паркинг (ID)</option>
+                {parkings &&
+                  parkings.map((x) => (
                     <option key={x.id} value={x.id}>
-                      {`Зал ${x.hall} ряд ${x.row} место ${x.number}`}
+                      {x.address}
                     </option>
                   ))}
               </Form.Select>
-              <Form.Text className="text-muted">Статус нового заказа</Form.Text>
+              <Form.Text className="text-muted">Паркинг для нового заказа</Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3">

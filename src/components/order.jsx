@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import axios from "axios";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
-import { setSeats, setOrderStatuses, addOrder } from "./reducerSlice";
+import { setParkings, setOrderStatuses, addOrder } from "./reducerSlice";
 import authHeader from "../services/auth-header";
 
 const Component = () => {
-  let { id } = useParams();
+  // let { id } = useParams();
 
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const seats = useSelector((state) => state.toolkit.seats);
+  const parkings = useSelector((state) => state.toolkit.parkings);
   const orderStatuses = useSelector((state) => state.toolkit.orderStatuses);
   const [selected, setSelected] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/seats`, { headers: authHeader() }).then((resp) => {
-      dispatch(setSeats(resp.data));
+    axios.get(`${apiBase}/parkings`, { headers: authHeader() }).then((resp) => {
+      dispatch(setParkings(resp.data));
     });
 
     axios
@@ -30,7 +30,7 @@ const Component = () => {
       });
   }, [apiBase, dispatch]);
 
-  const selectSeats = (id) => {
+  const selectPlaces = (id) => {
     const idx = selected.findIndex((x) => +x === +id);
     if (idx > -1) {
       selected.splice(idx, 1);
@@ -46,16 +46,18 @@ const Component = () => {
   const addCart = () => {
     const status = orderStatuses.find((x) => x.name === "В корзине").val;
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     for (const s of selected) {
       axios
         .post(
-          `${apiBase}/orders`,
+          `${apiBase}/orders`, 
           {
             status: +status,
-            movie_id: +id,
-            seat_id: +s,
+            user_id: user.id,
+            parking_id: +s,
           },
-          { headers: authHeader() }
+          { headers: authHeader() },
         )
         .then((resp) => {
           dispatch(addOrder(resp.data));
@@ -70,16 +72,16 @@ const Component = () => {
       <Row>
         <Col>
           <div className="border rounded mb-3 p-2">
-            {seats &&
-              seats.map((x) => (
+            {parkings &&
+              parkings.map((x) => (
                 <Button
                   key={x.id}
                   variant="outline-success"
                   className="m-1"
-                  onClick={(e) => selectSeats(x.id)}
+                  onClick={(e) => selectPlaces(x.id)}
                   active={selected.findIndex((el) => +el === +x.id) > -1}
                 >
-                  {`Зал ${x.hall} ряд ${x.row} место ${x.number}`}
+                  {x.address}
                 </Button>
               ))}
           </div>
