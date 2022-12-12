@@ -7,75 +7,71 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { addSeat, setSeats } from "../reducerSlice";
+import { addParking, setParkings } from "../reducerSlice";
 
 const Component = () => {
   const defNewObj = {
-    hall: "",
-    number: "",
-    row: "",
-    price: "",
+    parkingPlaces: "",
+    freePlaces: "",
+    address: "",
   };
 
-  const [newSeat, setNewSeat] = useState(defNewObj);
+  const [newObj, setNewObj] = useState(defNewObj);
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const seats = useSelector((state) => state.toolkit.seats);
+  const parkings = useSelector((state) => state.toolkit.parkings);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/seats`).then((resp) => {
-      dispatch(setSeats(resp.data));
+    axios.get(`${apiBase}/parkings`).then((resp) => {
+      dispatch(setParkings(resp.data));
     });
   }, [apiBase, dispatch]);
 
   const addNew = (e) => {
     e.preventDefault();
 
-    axios.post(`${apiBase}/seats`, newSeat).then((resp) => {
-      dispatch(addSeat(resp.data));
-      setNewSeat(defNewObj);
+    axios.post(`${apiBase}/parkings`, newObj).then((resp) => {
+      dispatch(addParking(resp.data));
+      setNewObj(defNewObj);
     });
   };
 
   const handleChange = (e) => {
-    const newMovieTmp = { ...newSeat };
+    const newObjTmp = { ...newObj };
 
-    newMovieTmp[e.target.name] = e.target.value;
+    newObjTmp[e.target.name] = e.target.value;
 
-    setNewSeat(newMovieTmp);
+    setNewObj(newObjTmp);
   };
 
   return (
     <div className="mb-5 p-2 border border-top-0 rounded-bottom">
-      <h3>Список фильмов</h3>
+      <h3>Список парковок</h3>
 
-      {seats && (
+      {parkings && (
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Зал</th>
-              <th>Ряд</th>
-              <th>Номер</th>
-              <th>Цена</th>
+              <th>Мест всего</th>
+              <th>Мест свободно</th>
+              <th>Адрес</th>
             </tr>
           </thead>
           <tbody>
-            {seats.length > 0 &&
-              seats.map((x) => {
+            {parkings.length > 0 &&
+              parkings.map((x) => {
                 return (
                   <tr key={x.id}>
                     <td>{x.id}</td>
-                    <td>{x.hall}</td>
-                    <td>{x.row}</td>
-                    <td>{x.number}</td>
-                    <td>{x.price}</td>
+                    <td>{x.parkingPlaces}</td>
+                    <td>{x.freePlaces}</td>
+                    <td>{x.address}</td>
                   </tr>
                 );
               })}
-            {!seats.length && (
+            {!parkings.length && (
               <tr>
-                <td>-</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -86,64 +82,50 @@ const Component = () => {
         </Table>
       )}
 
-      <h3>Добавить новое место в зал</h3>
+      <h3>Добавить новую парковочную зону</h3>
 
       <Form onSubmit={addNew}>
         <Row>
           <Col>
             <Form.Group className="mb-3">
-              <Form.Label>Номер зала</Form.Label>
+              <Form.Label>Полное количество парковочных мест</Form.Label>
               <Form.Control
                 type="number"
-                name="hall"
-                placeholder="Номер зала"
-                value={newSeat.hall}
+                name="parkingPlaces"
+                placeholder="Парковочных мест"
+                value={newObj.parkingPlaces}
                 onChange={handleChange}
               />
               <Form.Text className="text-muted">
-                Номер зала для нового места
+              Полное количество парковочных мест (всего мест)
               </Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Ряд</Form.Label>
+              <Form.Label>Количество свободных мест</Form.Label>
               <Form.Control
                 type="number"
-                name="row"
-                placeholder="Ряд"
-                value={newSeat.row}
+                name="freePlaces"
+                placeholder="Свободных мест"
+                value={newObj.freePlaces}
                 onChange={handleChange}
               />
-              <Form.Text className="text-muted">Номер ряда в зале</Form.Text>
+              <Form.Text className="text-muted">Количество свободных мест (в данный момент)</Form.Text>
             </Form.Group>
           </Col>
 
           <Col>
             <Form.Group className="mb-3">
-              <Form.Label>Номер места</Form.Label>
+              <Form.Label>Адрес парковочного комплекса</Form.Label>
               <Form.Control
-                type="number"
-                name="number"
-                placeholder="Номер места"
-                value={newSeat.number}
+                type="text"
+                name="address"
+                placeholder="Адрес нового парковочного комплекса"
+                value={newObj.address}
                 onChange={handleChange}
               />
               <Form.Text className="text-muted">
-                Номер нового места в ряду
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Страна</Form.Label>
-              <Form.Control
-                type="number"
-                name="price"
-                placeholder="Стоимость места"
-                value={newSeat.price}
-                onChange={handleChange}
-              />
-              <Form.Text className="text-muted">
-                Стоимость нового места в зале
+                Адрес парковочного комплекса
               </Form.Text>
             </Form.Group>
           </Col>

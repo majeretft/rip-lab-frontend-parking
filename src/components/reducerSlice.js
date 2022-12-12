@@ -3,24 +3,24 @@ import { createSlice } from "@reduxjs/toolkit";
 const slice = createSlice({
   name: "toolkit",
   initialState: {
-    movies: [],
-    seats: [],
+    users: [],
+    parkings: [],
     orders: [],
     orderStatuses: [],
     apiBase: "http://127.0.0.1:8080/api",
   },
   reducers: {
-    setMovies: (state, action) => {
-      state.movies = action.payload;
+    setUsers: (state, action) => {
+      state.users = action.payload;
     },
-    addMovie: (state, action) => {
-      state.movies.push(action.payload);
+    addUser: (state, action) => {
+      state.users.push(action.payload);
     },
-    setSeats: (state, action) => {
-      state.seats = action.payload;
+    setParkings: (state, action) => {
+      state.parkings = action.payload;
     },
-    addSeat: (state, action) => {
-      state.seats.push(action.payload);
+    addParking: (state, action) => {
+      state.parkings.push(action.payload);
     },
     setOrders: (state, action) => {
       state.orders = action.payload;
@@ -52,10 +52,10 @@ const slice = createSlice({
 export default slice.reducer;
 
 export const {
-  setMovies,
-  addMovie,
-  setSeats,
-  addSeat,
+  setUsers,
+  addUser,
+  setParkings,
+  addParking,
   setOrders,
   addOrder,
   setOrderStatuses,

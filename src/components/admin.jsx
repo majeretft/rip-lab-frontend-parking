@@ -1,12 +1,12 @@
 import { useState } from "react";
 import Nav from "react-bootstrap/Nav";
 
-import Movies from "./admin/movies";
+import Users from "./admin/users";
 import Orders from "./admin/orders";
-import Seats from "./admin/seats";
+import Parkings from "./admin/parkings";
 
 const Component = () => {
-  const [selectedTab, setSelectedTab] = useState("Movies");
+  const [selectedTab, setSelectedTab] = useState("Users");
 
   const handleChange = (eventKey) => {
     setSelectedTab(eventKey);
@@ -17,13 +17,13 @@ const Component = () => {
       <h2>Интерфейс администратора</h2>
       <Nav variant="tabs" defaultActiveKey="/home" onSelect={handleChange}>
         <Nav.Item>
-          <Nav.Link eventKey="Movies" active={selectedTab === "Movies"}>
-            Фильмы
+          <Nav.Link eventKey="Users" active={selectedTab === "Users"}>
+            Посетители
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="Seats" active={selectedTab === "Seats"}>
-            Места
+          <Nav.Link eventKey="Parkings" active={selectedTab === "Parkings"}>
+            Парковки
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -32,8 +32,8 @@ const Component = () => {
           </Nav.Link>
         </Nav.Item>
       </Nav>
-      {selectedTab === "Movies" && <Movies />}
-      {selectedTab === "Seats" && <Seats />}
+      {selectedTab === "Users" && <Users />}
+      {selectedTab === "Parkings" && <Parkings />}
       {selectedTab === "Orders" && <Orders />}
     </>
   );

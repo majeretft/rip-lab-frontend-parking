@@ -8,51 +8,51 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
-import { setMovies } from "./reducerSlice";
+import { setParkings } from "./reducerSlice";
 
 const Component = () => {
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const movies = useSelector((state) => state.toolkit.movies);
+  const parkings = useSelector((state) => state.toolkit.parkings);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/movies`).then((resp) => {
-      dispatch(setMovies(resp.data));
+    axios.get(`${apiBase}/parkings`).then((resp) => {
+      dispatch(setParkings(resp.data));
     });
   }, [apiBase, dispatch]);
 
   return (
     <>
-      <h1>Сегодня в кино</h1>
+      <h1>Доступные парковки</h1>
       <Row>
-        {movies &&
-          movies.map((x) => (
+        {parkings &&
+          parkings.map((x) => (
             <Col key={x.id} md="4" xl="3">
               <Card style={{ width: "100%" }}>
-                <Card.Img variant="top" src={`${x.image}`} />
                 <Card.Body>
-                  <Card.Title>{x.name}</Card.Title>
-                  <Card.Text>{x.description}</Card.Text>
+                  <Card.Text>Свободных мест: {x.freePlaces}</Card.Text>
+                  <Card.Text>Всего мест: {x.parkingPlaces}</Card.Text>
+                  <Card.Text>Расположение: {x.address}</Card.Text>
                   <ButtonGroup>
                     <Button
                       variant="outline-primary"
                       as={Link}
                       to={`info/${x.id}`}
                     >
-                      О фильме
+                      О расположении
                     </Button>
                     <Button variant="primary" as={Link} to={`order/${x.id}`}>
-                      Купить билет
+                      Получить место
                     </Button>
                   </ButtonGroup>
                 </Card.Body>
               </Card>
             </Col>
           ))}
-        {!movies && (
+        {!parkings && (
           <>
-            <h3>В данный момент сеансов нет</h3>
-            <p>Если вы администратор - добавьте сеансы</p>
+            <h3>В данный момент нет парковок</h3>
+            <p>Если вы администратор - добавьте их</p>
           </>
         )}
       </Row>

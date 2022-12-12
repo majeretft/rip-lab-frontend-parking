@@ -7,84 +7,68 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { addMovie, setMovies } from "../reducerSlice";
+import { addUser, setUsers } from "../reducerSlice";
 
 const Component = () => {
-  const defNewMovie = {
+  const derObj = {
     name: "",
-    description: "",
-    genres: "",
-    country: "",
-    year: "",
-    image: "",
+    car: "",
   };
 
-  const [newMovie, setNewMovie] = useState(defNewMovie);
+  const [newObj, setNewObj] = useState(derObj);
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const movies = useSelector((state) => state.toolkit.movies);
+  const users = useSelector((state) => state.toolkit.users);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/movies`).then((resp) => {
-      dispatch(setMovies(resp.data));
+    axios.get(`${apiBase}/users`).then((resp) => {
+      dispatch(setUsers(resp.data));
     });
   }, [apiBase, dispatch]);
 
   const addNew = (e) => {
     e.preventDefault();
 
-    axios.post(`${apiBase}/movies`, newMovie).then((resp) => {
-      dispatch(addMovie(resp.data));
-      setNewMovie(defNewMovie);
+    axios.post(`${apiBase}/users`, newObj).then((resp) => {
+      dispatch(addUser(resp.data));
+      setNewObj(derObj);
     });
   };
 
   const handleChange = (e) => {
-    const newMovieTmp = { ...newMovie };
+    const newMovieTmp = { ...newObj };
 
     newMovieTmp[e.target.name] = e.target.value;
 
-    setNewMovie(newMovieTmp);
+    setNewObj(newMovieTmp);
   };
 
   return (
     <div className="mb-5 p-2 border border-top-0 rounded-bottom">
-      <h3>Список фильмов</h3>
+      <h3>Список посетителей</h3>
 
-      {movies && (
+      {users && (
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Название</th>
-              <th>Описание</th>
-              <th>Жанры</th>
-              <th>Страна</th>
-              <th>Год</th>
-              <th>Постер</th>
+              <th>Имя</th>
+              <th>Автомобиль</th>
             </tr>
           </thead>
           <tbody>
-            {movies.length > 0 &&
-              movies.map((x) => {
+            {users.length > 0 &&
+              users.map((x) => {
                 return (
                   <tr key={x.id}>
                     <td>{x.id}</td>
                     <td>{x.name}</td>
-                    <td>{x.description}</td>
-                    <td>{x.genres}</td>
-                    <td>{x.country}</td>
-                    <td>{x.year}</td>
-                    <td>{x.image}</td>
+                    <td>{x.car}</td>
                   </tr>
                 );
               })}
-            {!movies.length && (
+            {!users.length && (
               <tr>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -94,91 +78,37 @@ const Component = () => {
         </Table>
       )}
 
-      <h3>Добавить новый фильм</h3>
+      <h3>Добавить посетителя</h3>
 
       <Form onSubmit={addNew}>
         <Row>
           <Col>
             <Form.Group className="mb-3">
-              <Form.Label>Название</Form.Label>
+              <Form.Label>Имя</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
-                placeholder="Название фильма"
-                value={newMovie.name}
+                placeholder="Имя нового посетителя"
+                value={newObj.name}
                 onChange={handleChange}
               />
               <Form.Text className="text-muted">
-                Название нового фильма
+                Имя нового посетителя
               </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Описание</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="description"
-                placeholder="Описание фильма"
-                value={newMovie.description}
-                onChange={handleChange}
-              />
-              <Form.Text className="text-muted">
-                Длинное описание нового фильма
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Жанры</Form.Label>
-              <Form.Control
-                type="text"
-                name="genres"
-                placeholder="Жанры фильма"
-                value={newMovie.genres}
-                onChange={handleChange}
-              />
-              <Form.Text className="text-muted">Жанры нового фильма</Form.Text>
             </Form.Group>
           </Col>
-
+          
           <Col>
             <Form.Group className="mb-3">
-              <Form.Label>Страна</Form.Label>
+              <Form.Label>Автомобиль</Form.Label>
               <Form.Control
                 type="text"
-                name="country"
-                placeholder="Страна фильма"
-                value={newMovie.country}
+                name="car"
+                placeholder="Автомобиль нового посетителя"
+                value={newObj.car}
                 onChange={handleChange}
               />
-              <Form.Text className="text-muted">Страна нового фильма</Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Год</Form.Label>
-              <Form.Control
-                type="number"
-                name="year"
-                placeholder="Год релиза фильма"
-                value={newMovie.year}
-                onChange={handleChange}
-              />
-              <Form.Text className="text-muted">
-                Год релиза нового фильма
-              </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Постер (ссылка)</Form.Label>
-              <Form.Control
-                type="text"
-                name="image"
-                placeholder="Постер (ссылка)"
-                value={newMovie.image}
-                onChange={handleChange}
-              />
-              <Form.Text className="text-muted">
-                Ссылка на постер нового фильма
-              </Form.Text>
+              <Form.Text className="text-muted">Автомобиль нового посетителя</Form.Text>
             </Form.Group>
           </Col>
         </Row>

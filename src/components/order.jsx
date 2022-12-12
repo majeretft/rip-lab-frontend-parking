@@ -1,27 +1,30 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import axios from "axios";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Image from "react-bootstrap/Image";
 
-import { setSeats, setOrderStatuses, addOrder } from "./reducerSlice";
+import { setParkings, setOrderStatuses, addOrder, setUsers } from "./reducerSlice";
 
 const Component = () => {
-  let { id } = useParams();
+  // let { id } = useParams();
 
   const apiBase = useSelector((state) => state.toolkit.apiBase);
-  const seats = useSelector((state) => state.toolkit.seats);
+  const parkings = useSelector((state) => state.toolkit.parkings);
+  const users = useSelector((state) => state.toolkit.users);
   const orderStatuses = useSelector((state) => state.toolkit.orderStatuses);
   const [selected, setSelected] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`${apiBase}/seats`).then((resp) => {
-      dispatch(setSeats(resp.data));
+    axios.get(`${apiBase}/parkings`).then((resp) => {
+      dispatch(setParkings(resp.data));
+    });
+
+    axios.get(`${apiBase}/users`).then((resp) => {
+      dispatch(setUsers(resp.data));
     });
 
     axios.get(`${apiBase}/orders/info/statuses`).then((resp) => {
@@ -29,7 +32,7 @@ const Component = () => {
     });
   }, [apiBase, dispatch]);
 
-  const selectSeats = (id) => {
+  const selectPlaces = (id) => {
     const idx = selected.findIndex((x) => +x === +id);
     if (idx > -1) {
       selected.splice(idx, 1);
@@ -49,8 +52,8 @@ const Component = () => {
       axios
         .post(`${apiBase}/orders`, {
           status: +status,
-          movie_id: +id,
-          seat_id: +s,
+          user_id: users[0].id,
+          parking_id: +s,
         })
         .then((resp) => {
           dispatch(addOrder(resp.data));
@@ -65,16 +68,16 @@ const Component = () => {
       <Row>
         <Col>
           <div className="border rounded mb-3 p-2">
-            {seats &&
-              seats.map((x) => (
+            {parkings &&
+              parkings.map((x) => (
                 <Button
                   key={x.id}
                   variant="outline-success"
                   className="m-1"
-                  onClick={(e) => selectSeats(x.id)}
+                  onClick={(e) => selectPlaces(x.id)}
                   active={selected.findIndex((el) => +el === +x.id) > -1}
                 >
-                  {`Зал ${x.hall} ряд ${x.row} место ${x.number}`}
+                  {x.address}
                 </Button>
               ))}
           </div>

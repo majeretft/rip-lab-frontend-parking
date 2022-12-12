@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -11,26 +11,26 @@ const Component = () => {
   const apiBase = useSelector((state) => state.toolkit.apiBase);
 
   const [name, setName] = useState("");
-  const [movies, setMovies] = useState([]);
+  const [parkings, setParkings] = useState([]);
 
   const find = () => {
-    axios.get(`${apiBase}/movies/?name=${encodeURIComponent(name)}`).then((resp) => {
-      setMovies(resp.data);
+    axios.get(`${apiBase}/parkings/?address=${encodeURIComponent(name)}`).then((resp) => {
+      setParkings(resp.data);
     });
   };
 
   return (
     <>
-      <h1>Поиск фильма</h1>
+      <h1>Поиск парковочной площадки</h1>
       <Form.Group className="mb-3">
-        <Form.Label>Название для поиска</Form.Label>
+        <Form.Label>Часть адреса для поиска</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Название фильма для поиска"
+          placeholder="Часть адреса для поиска"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Form.Text className="text-muted">Название фильма для поиска</Form.Text>
+        <Form.Text className="text-muted">Часть адреса для поиска</Form.Text>
       </Form.Group>
       <Form.Group className="mb-3">
         <Button variant="primary" type="submit" onClick={find}>
@@ -44,25 +44,20 @@ const Component = () => {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Жанры</th>
-            <th>Страна</th>
-            <th>Год</th>
-            <th>Билеты</th>
+            <th>Мест всего</th>
+            <th>Мест свободно</th>
+            <th>Расположение</th>
           </tr>
         </thead>
         <tbody>
-          {movies.length > 0 &&
-            movies.map((x) => {
+          {parkings.length > 0 &&
+            parkings.map((x) => {
               return (
                 <tr key={x.id}>
                   <td>{x.id}</td>
-                  <td>{x.name}</td>
-                  <td>{x.description}</td>
-                  <td>{x.genres}</td>
-                  <td>{x.country}</td>
-                  <td>{x.year}</td>
+                  <td>{x.parkingPlaces}</td>
+                  <td>{x.freePlaces}</td>
+                  <td>{x.address}</td>
                   <td>
                     <ButtonGroup>
                       <Button
@@ -70,22 +65,18 @@ const Component = () => {
                         as={Link}
                         to={`info/${x.id}`}
                       >
-                        О фильме
+                        О расположении
                       </Button>
                       <Button variant="primary" as={Link} to={`order/${x.id}`}>
-                        Купить билет
+                        Получить место
                       </Button>
                     </ButtonGroup>
                   </td>
                 </tr>
               );
             })}
-          {!movies.length && (
+          {!parkings.length && (
             <tr>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
               <td>-</td>
               <td>-</td>
               <td>-</td>
