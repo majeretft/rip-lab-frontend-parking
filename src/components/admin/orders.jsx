@@ -13,22 +13,22 @@ import {
   addOrder,
   setOrders,
   setOrderStatuses,
-  setMovies,
-  setSeats,
+  setUsers,
+  setParkings,
+  updateOrder,
 } from "../reducerSlice";
 import authHeader from "../../services/auth-header";
 
 const Component = () => {
   const [status, setStatus] = useState("");
-  const [movieId, setMovieId] = useState("");
-  const [seatId, setSeatId] = useState("");
+  const [parkingId, setParkingId] = useState("");
+  const [userId, setUserId] = useState("");
 
   const apiBase = useSelector((state) => state.toolkit.apiBase);
   const users = useSelector((state) => state.toolkit.users);
   const parkings = useSelector((state) => state.toolkit.parkings);
   const orders = useSelector((state) => state.toolkit.orders);
   const orderStatuses = useSelector((state) => state.toolkit.orderStatuses);
-  const users = useSelector((state) => state.toolkit.users);
   const dispatch = useDispatch();
 
   const [filterStatus, setFilterStatus] = useState("");
@@ -36,6 +36,11 @@ const Component = () => {
   const [filterUser, setFilterUser] = useState("");
 
   const [filteredOrders, setFilteredOrders] = useState([]);
+
+  useEffect(() => {
+    setFilteredOrders(orders);
+  }, [orders]);
+
   const filterOrders = () => {
     if (!orders) return;
 
@@ -75,10 +80,6 @@ const Component = () => {
     axios.get(`${apiBase}/parkings`, { headers: authHeader() }).then((resp) => {
       dispatch(setParkings(resp.data));
     });
-
-    axios.get(`${apiBase}/users`, { headers: authHeader() }).then((resp) => {
-      dispatch(setUsers(resp.data));
-    });
   }, [apiBase, dispatch]);
 
   const addNew = (e) => {
@@ -88,8 +89,8 @@ const Component = () => {
       .post(`${apiBase}/orders`, 
         {
           status: +status,
-          movie_id: +movieId,
-          seat_id: +seatId,
+          parking_id: +parkingId,
+          user_id: +userId,
         },
         { headers: authHeader() },
       )
@@ -236,8 +237,21 @@ const Component = () => {
                         orderStatuses.find((e) => +e.val === +x.status)?.name}
                     </td>
                     <td>{x.movie_id}</td>
-                    <td>{x.seat_id}</td>
+                    <td>{x.parking_id}</td>
                     <td>{x.user_id}</td>
+                    <td>
+                      {users &&
+                        users.find((y) => +y.id === +x.user_id)?.username}
+                    </td>
+                    <td>{moment(x.updatedAt).format("DD-MM-YYYY hh:ss")}</td>
+                    <td>
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() => handleShow(x.id)}
+                      >
+                        &#9998;
+                      </Button>
+                    </td>
                   </tr>
                 );
               })}
@@ -358,7 +372,7 @@ const Component = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Редактирование записи</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3">

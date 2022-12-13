@@ -52,7 +52,6 @@ const initialState = {
   parkings: [],
   orders: [],
   orderStatuses: [],
-  users: [],
   apiBase: "http://127.0.0.1:8080/api",
   isLoggedIn: false,
   user: null,
@@ -74,12 +73,12 @@ const slice = createSlice({
       state.users.push(action.payload);
     },
     updateParkings: (state, action) => {
-      const tmp = state.movies
-        .slice(0, state.movies.length)
+      const tmp = state.parkings
+        .slice(0, state.parkings.length)
         .filter((x) => +x.id !== action.payload.id);
       tmp.push(action.payload);
 
-      state.movies = tmp;
+      state.parkings = tmp;
     },
     setParkings: (state, action) => {
       state.parkings = action.payload;
@@ -154,5 +153,5 @@ export const {
   deleteOrder,
   setMessage,
   clearMessage,
-  updateMovie,
+  updateParkings,
 } = slice.actions;

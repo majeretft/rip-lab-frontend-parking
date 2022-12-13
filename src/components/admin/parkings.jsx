@@ -6,8 +6,10 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Modal from "react-bootstrap/Modal";
 
-import { addParking, setParkings } from "../reducerSlice";
+import { addParking, setParkings, updateParkings } from "../reducerSlice";
+import authHeader from "../../services/auth-header";
 
 const Component = () => {
   const defNewObj = {
@@ -44,6 +46,43 @@ const Component = () => {
     setNewObj(newObjTmp);
   };
 
+  const [show, setShow] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
+  const [parkingPlaces, setParkingPlaces] = useState("");
+  const [freePlaces, setFreePlaces] = useState("");
+  const [address, setAddress] = useState("");
+  const handleClose = () => setShow(false);
+  const handleShow = (id) => {
+    const parking = parkings.find((x) => x.id === id);
+
+    if (!parking) return;
+
+    setSelectedId(parking.id);
+    setParkingPlaces(parking.parkingPlaces);
+    setFreePlaces(parking.freePlaces);
+    setAddress(parking.address);
+
+    setShow(true);
+  };
+  const handleSave = () => {
+    const parking = parkings.find((x) => x.id === selectedId);
+
+    if (!parking) return;
+
+    const o = { ...parking };
+    o.id = selectedId;
+    o.parkingPlaces = parkingPlaces;
+    o.freePlaces = freePlaces;
+    o.address = address;
+
+    axios
+      .put(`${apiBase}/parkings/${o.id}`, o, { headers: authHeader() })
+      .then((resp) => {
+        dispatch(updateParkings(o));
+        handleClose();
+      });
+  };
+
   return (
     <div className="mb-5 p-2 border border-top-0 rounded-bottom">
       <h3>Список парковок</h3>
@@ -56,6 +95,7 @@ const Component = () => {
               <th>Мест всего</th>
               <th>Мест свободно</th>
               <th>Адрес</th>
+              <th>Изменить</th>
             </tr>
           </thead>
           <tbody>
@@ -67,11 +107,20 @@ const Component = () => {
                     <td>{x.parkingPlaces}</td>
                     <td>{x.freePlaces}</td>
                     <td>{x.address}</td>
+                    <td>
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() => handleShow(x.id)}
+                      >
+                        &#9998;
+                      </Button>
+                    </td>
                   </tr>
                 );
               })}
             {!parkings.length && (
               <tr>
+                <td>-</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -97,7 +146,7 @@ const Component = () => {
                 onChange={handleChange}
               />
               <Form.Text className="text-muted">
-              Полное количество парковочных мест (всего мест)
+                Полное количество парковочных мест (всего мест)
               </Form.Text>
             </Form.Group>
 
@@ -110,7 +159,9 @@ const Component = () => {
                 value={newObj.freePlaces}
                 onChange={handleChange}
               />
-              <Form.Text className="text-muted">Количество свободных мест (в данный момент)</Form.Text>
+              <Form.Text className="text-muted">
+                Количество свободных мест (в данный момент)
+              </Form.Text>
             </Form.Group>
           </Col>
 
@@ -135,6 +186,66 @@ const Component = () => {
           Добавить
         </Button>
       </Form>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Редактирование записи</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Количество мест</Form.Label>
+            <Form.Control
+              type="number"
+              name="parkingPlaces"
+              placeholder="Количество мест"
+              value={parkingPlaces}
+              onChange={(e) => setParkingPlaces(e.target.value)}
+              onBlur={(e) => setParkingPlaces(e.target.value)}
+            />
+            <Form.Text className="text-muted">
+              Количество мест
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Количество свободных мест</Form.Label>
+            <Form.Control
+              type="number"
+              name="freePlaces"
+              placeholder="Количество свободных мест"
+              value={freePlaces}
+              onChange={(e) => setFreePlaces(e.target.value)}
+              onBlur={(e) => setFreePlaces(e.target.value)}
+            />
+            <Form.Text className="text-muted">
+              Количество свободных мест
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Адрес</Form.Label>
+            <Form.Control
+              type="text"
+              name="address"
+              placeholder="Адрес паркинга"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              onBlur={(e) => setAddress(e.target.value)}
+            />
+            <Form.Text className="text-muted">
+              Адрес паркинга
+            </Form.Text>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Отмена
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Сохранить
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
